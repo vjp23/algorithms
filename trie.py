@@ -7,7 +7,7 @@ class Trie(object):
     """A Trie node object along with its children.
     
     The Trie data stucture decomposes words into their consituent characters, with each node in the resulting
-    tree corresponding to a character. Traversing the tree allow for rapid cword construction based on words
+    tree corresponding to a character. Traversing the tree allows for rapid word construction based on words
     previously observed by the tree.
 
     Attributes:
