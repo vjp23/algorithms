@@ -1,16 +1,29 @@
 from functools import reduce
-"""
-Implementation of a Trie data structure for fast word completion
-"""
+
+# Implementation of a Trie data structure for fast word completion
 
 
 class Trie(object):
+    """A Trie node object along with its children.
+    
+    The Trie data stucture decomposes words into their consituent characters, with each node in the resulting
+    tree corresponding to a character. Traversing the tree allow for rapid cword construction based on words
+    previously observed by the tree.
+
+    Attributes:
+        children: A dictionary keyed by characters and pointing to Trie objects which are children nodes to this node.
+        full_word: A boolean indicating whether a word ends at this node. Does not necessarily imply a leaf node.
+    """
+
     def __init__(self, dictionary=None, split_char=None):
-        """
-        Initializes the Trie object. No children are added by default, and the full_word indicator is False. If a
+        """Initializes the Trie object. 
+
+        No children are added by default, and the full_word indicator is False. If a
         dictionary is specified as a list of strings or as a single long string, then each string will be added.
-        :param dictionary: A list containing one or more strings- if one long string, use split_char to split it
-        :param split_char: The string on which to split the dictionary string into strings to add to the tree
+
+        Args:
+            dictionary: A list containing one or more strings- if one long string, use split_char to split it
+            split_char: The string on which to split the dictionary string into strings to add to the tree
         """
         # Use a dictionary for children for constant-time lookups
         self.children = {}
@@ -33,16 +46,20 @@ class Trie(object):
                 self.insert(word)
 
     def branch(self, char):
-        """
-        Adds a new child node as a new Trie object, keyed as char
-        :param char: The character used to reference the child node to add
+        """Adds a new child node as a new Trie object.
+         
+         The child node will be keyed as char in the children dictionary.
+
+        Args:
+            char: The character used to reference the child node to add
         """
         self.children[char] = Trie()
 
     def insert(self, word):
-        """
-        Insert a new word into this Trie object, treating this as the root node
-        :param word: A single string to add to the Trie
+        """Insert a new word into this Trie object, treating this as the root node.
+        
+        Args:
+            word: A single string to add to the Trie
         """
         # Begin by setting the node variable to the root node (this Trie object)
         node = self
@@ -57,10 +74,15 @@ class Trie(object):
         node.full_word = True
 
     def get_completions(self, prefix):
-        """
+        """Returns a set of all completions of the given prefix.
+
         Extracts all suffixes of a given prefix, starting from this node, then appends them to the prefix and returns
-        :param prefix: A string, a prefix for which to search the tree and find suffixes
-        :return: A set of copmleted words found following the input prefix
+        
+        Args:
+            prefix: A string, a prefix for which to search the tree and find suffixes
+        
+        Returns:
+            A set of copmleted words found following the input prefix
         """
         # Define the suffixes as a set to ensure uniqueness among the elements
         suffixes = set()
@@ -78,11 +100,17 @@ class Trie(object):
                                            for (char, node) in self.children.items()]) | suffixes
 
     def complete(self, prefix, n=3):
-        """
-        Given an input string prefix, find the suffixes which exist in the tree, add the prefix, and return the list
-        :param prefix: A string for which to find n full words which begin with the prefix
-        :param n: The number of completions to return- list is truncated arbitrarily
-        :return: The n complete words in the tree which begin with prefix
+        """Find autocompletions for a prefix.
+
+        Given an input string prefix, find the suffixes which exist in the tree, add the prefix, and return the list.
+        Only returns words which were previously explicitly added to the dictionary as distinct words.
+
+        Args:
+            prefix: A string for which to find n full words which begin with the prefix
+            n: The number of completions to return- list is truncated arbitrarily
+        
+        Returns:
+            The n complete words in the tree which begin with prefix
         """
         # Before doing anything, handle the edge case of the empty string as an input. We don't have any meangingful
         # guidance here, so return the empty set. We cannot complete a word with no prefix!
@@ -103,10 +131,12 @@ class Trie(object):
         return completions[:n]
 
     def check_for(self, word):
-        """
-        Checks whether the word was entered into the tree  as a full word by searching for it
-        :param word: A single string for which to check the tree
-        :return: Boolean value indicating whether word was entered into the tree as a complete word.
+        """Checks whether the word was entered into the tree  as a full word by searching for it.
+
+        Args:
+            word: A single string for which to check the tree
+        Returns:
+            Boolean value indicating whether word was entered into the tree as a complete word.
         """
         # Initialize the node variable
         node = self
